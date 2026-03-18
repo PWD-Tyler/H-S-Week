@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Safe Home Profile Generator</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #ebebeb;
+    margin: 0;
+    padding: 20px;
+    overflow-x: hidden; /* prevent horizontal scroll */
+  }
+
+  .container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .form-section {
+    flex: 0 0 360px; /* slightly wider */
+  }
+
+  .canvas-section {
+    flex: 1.2; /* more width */
+    margin-left: 100px; /* push canvas more to the right */
+  }
+
+  canvas {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  input[type="text"], input[type="file"] {
+    margin: 6px 0;
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: #fff;
+    display: block;
+  }
+
+  input[type="text"]:focus {
+    border-color: #0049ae;
+    box-shadow: 0 0 0 2px rgba(0,73,174,0.2);
+  }
+
+  button {
+    margin: 5px 5px 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filled {
+    background: #0049ae;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    height: 60px;
+  }
+
+  .filled:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  }
+
+  .filled:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  }
+
+  .outline {
+    background: none;
+    color: #0049ae;
+    border: 2px solid #0049ae;
+  }
+
+  .outline:hover {
+    background: #0049ae;
+    color: white;
+  }
+
+  .selected {
+    border: 4px solid #0049ae;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .template-buttons {
+    margin: 10px 0 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    width: 100%; /* stretch to match inputs */
+  }
+
+  .template-buttons button {
+    flex: 1; /* make all buttons equal width */
+  }
+
+  .step {
+    font-size: 18px;
+    color:#0049ae;
+    margin-top: 20px; 
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: left;
+  }
+
+  .step:first-of-type {
+    margin-top: -5px;
+  }
+
+  .step-desc {
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+    margin-bottom: 10px;
+  }
+
+  /* Buttons layout */
+  .main-btn {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+
+  .sub-btns {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .sub-btns button {
+    flex: 1; /* stretch save/reset buttons to align */
+    height: 40px;
+    background-color: #bebebe;
+    color: #363636;
+  }
+
+  #panel {
+    background: #f5f7fa;
+    position: fixed;
+    z-index: -1;
+    width: 450px;
+    height: 1000px;
+    overflow: hidden;
+    margin-left: -20px;
+    margin-top: -20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    outline: solid 1px rgba(2, 0, 126, 0.2);
+  }
+
+  /* Tablet + Mobile */
+  @media (max-width: 1024px) {
+    .container {
+      flex-direction: column;
+    }
+
+    .form-section {
+      flex: 1;
+      width: 80%;
+    }
+
+    #panel {
+      visibility: hidden;
+    }
+    .canvas-section {
+      width: 100%;
+      margin-left: 0;
+      margin-top: 20px;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+    }
+
+    .sub-btns {
+      flex-direction: column;
+      margin-bottom: 40px;
+    }
+
+    .template-buttons {
+      flex-wrap: wrap;
+    }
+  }
+
+  /* Pop-up notification with close button */
+  #popup-message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #0049ae;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-size: 14px;
+    z-index: 9999;
+    max-width: 400px;
+    height: 100px;
+    visibility: hidden;
+  }
+
+  #popup-message .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div id="panel"></div>
+  <div class="form-section">
+    <div class="step">Step 1: Select Service Area</div>
+    <div class="template-buttons">
+      <button class="outline selected" onclick="selectTemplate('template.jpg', this)">Parks & Forestry</button>
+      <button class="outline" onclick="selectTemplate('template2.jpg', this)">Roads & Parking</button>
+      <button class="outline" onclick="selectTemplate('template3.jpg', this)">Solid Waste</button>
+      <button class="outline" onclick="selectTemplate('template4.jpg', this)">Traffic</button>
+    </div>
+
+    <div class="step">Step 2: Enter Name</div>
+    <input type="text" id="name" placeholder="Enter your name here" maxlength="19">
+
+    <div class="step">Step 3: Enter Reason(s)</div>
+    <div class="step-desc">These reasons will appear on the poster. Keep them short and meaningful.</div>
+    <input type="text" id="reason1" placeholder="Example: My Dog">
+    <input type="text" id="reason2" placeholder="Example: My Partner">
+    <input type="text" id="reason3" placeholder="Example: My Kids">
+    <input type="text" id="reason4" placeholder="Example: My Favourite Movie">
+
+    <div class="step">Step 4: Upload Picture(s)</div>
+    <div class="step-desc">Choose 1–4 images to show on your poster that connect to your reasons.</div>
+    <input type="file" id="img1" accept="image/*">
+    <input type="file" id="img2" accept="image/*">
+    <input type="file" id="img3" accept="image/*">
+    <input type="file" id="img4" accept="image/*">
+
+    <button class="filled main-btn" onclick="generateCard()">Generate</button>
+    <div class="sub-btns">
+      <button class="filled" onclick="saveCard()">Save Image</button>
+      <button class="filled" onclick="resetForm()">Reset</button>
+    </div>
+  </div>
+
+  <div class="canvas-section">
+    <canvas id="canvas" width="596" height="842"></canvas>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let currentTemplate = 'template.jpg';
+const templateImg = new Image();
+templateImg.src = currentTemplate;
+
+templateImg.onload = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+};
+
+function selectTemplate(filename, buttonElement) {
+    currentTemplate = filename;
+    templateImg.src = currentTemplate;
+    document.querySelectorAll('.template-buttons button').forEach(btn => btn.classList.remove('selected'));
+    buttonElement.classList.add('selected');
+    templateImg.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+    };
+}
+
+function loadImage(file) {
+    return new Promise(resolve => {
+        if (!file) { resolve(null); return; }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+function drawRoundedImage(img, x, y, w, h, r=20, border=false) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.clip();
+
+    let scale = Math.min(w / img.width, h / img.height);
+    let newWidth = img.width * scale;
+    let newHeight = img.height * scale;
+    let offsetX = x + (w - newWidth) / 2;
+    let offsetY = y + (h - newHeight) / 2;
+
+    ctx.drawImage(img, offsetX, offsetY, newWidth, newHeight);
+
+    if (border) {
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
+    ctx.restore();
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    const lines = [];
+    for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && n > 0) {
+            lines.push(line);
+            line = words[n] + ' ';
+        } else {
+            line = testLine;
+        }
+    }
+    lines.push(line);
+    for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], x, y + i*lineHeight);
+    }
+}
+
+async function generateCard() {
+    await new Promise(resolve => {
+        if (templateImg.complete) resolve();
+        else templateImg.onload = resolve;
+    });
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(templateImg,0,0,canvas.width,canvas.height);
+
+    const nameInput = document.getElementById('name').value || "Enter your name here";
+const name = nameInput.substring(0, 19); // ensure max 19 characters
+    ctx.fillStyle = '#232323';
+    ctx.font = 'bold 32px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText(name, 30, 150);
+   
+    ctx.lineWidth = 2;
+  
+    const headerText = "Why is it important for me to return home safely each day?";
+    ctx.fillStyle = '#232323';
+    ctx.font = '18px Arial';
+    ctx.textBaseline = 'top';
+    wrapText(ctx, headerText, 30, 190, 340, 23);
+
+    const reasons = [
+        document.getElementById('reason1').value,
+        document.getElementById('reason2').value,
+        document.getElementById('reason3').value,
+        document.getElementById('reason4').value
+    ].filter(r => r.trim() !== "");
+
+    if (reasons.length > 0) {
+        wrapText(ctx, reasons.join(", ") + ".", 30, 250, 340, 28);
+    }
+
+    const files = [
+        document.getElementById('img1').files[0],
+        document.getElementById('img2').files[0],
+        document.getElementById('img3').files[0],
+        document.getElementById('img4').files[0]
+    ].filter(f => f);
+
+    let size, imgPositions = [];
+    switch(files.length) {
+        case 1:
+            size = 250;
+            imgPositions = [{x: (canvas.width - size)/2, y: 400}];
+            break;
+        case 2:
+            size = 220;
+            imgPositions = [
+                {x: canvas.width * 0.28 - size/2, y: 420},
+                {x: 3*canvas.width * 0.22 - size/2, y: 420}
+            ];
+            break;
+        case 3:
+            size = 150;
+            imgPositions = [
+                {x: canvas.width/4 - size/2, y: 400},
+                {x: 3*canvas.width/4 - size/2, y: 400},
+                {x: (canvas.width - size)/2, y: 580}
+            ];
+            break;
+        case 4:
+            size = 180;
+            imgPositions = [
+                {x: canvas.width * 0.33 - size/2, y: 380},
+                {x: canvas.width * 0.67 - size/2, y: 380},
+                {x: canvas.width * 0.33 - size/2, y: 580},
+                {x: canvas.width * 0.67 - size/2, y: 580}
+            ];
+            break;
+    }
+
+    for (let i = 0; i < files.length; i++) {
+        const img = await loadImage(files[i]);
+        if (img) drawRoundedImage(img,imgPositions[i].x,imgPositions[i].y,size,size,15,false);
+    }
+
+    // show persistent pop-up message
+    let existingPopup = document.getElementById('popup-message');
+    if (!existingPopup) {
+        let popup = document.createElement('div');
+        popup.id = 'popup-message';
+        popup.innerHTML = "You've created your poster! Click the print button for your work area. Make sure you upload your poster to the dropbox for the health and safety team.";
+
+        let closeBtn = document.createElement('button');
+        closeBtn.className = 'close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.onclick = () => popup.remove();
+
+        popup.appendChild(closeBtn);
+        document.body.appendChild(popup);
+    }
+}
+
+function saveCard() {
+    canvas.toBlob(function(blob){
+        const link = document.createElement('a');
+        link.download = 'safe-home-card.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+    });
+}
+
+function resetForm() {
+    document.getElementById('name').value = '';
+    document.getElementById('reason1').value = '';
+    document.getElementById('reason2').value = '';
+    document.getElementById('reason3').value = '';
+    document.getElementById('reason4').value = '';
+    document.getElementById('img1').value = '';
+    document.getElementById('img2').value = '';
+    document.getElementById('img3').value = '';
+    document.getElementById('img4').value = '';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+}
+</script>
+
+</body>
+</html>
