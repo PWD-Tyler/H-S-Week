@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PWD Safety Poster</title>
+<title>Why I Work Safe Poster</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -95,17 +95,49 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
 
-  .template-buttons {
-    margin: 10px 0 20px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: nowrap;
-    width: 100%; /* stretch to match inputs */
-  }
+.template-buttons {
+  margin: 10px 0 20px;
+  display: flex;
+  gap: 6px; /* slightly tighter */
+  flex-wrap: nowrap; /* keep one row */
+  width: 100%;
+}
 
-  .template-buttons button {
-    flex: 1; /* make all buttons equal width */
-  }
+.template-buttons button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 12px 10px; /* increased padding */
+  font-size: 13px;
+  border-radius: 10px;
+  border: 2px solid #d0d7e2;
+  background: #fff;
+  color: #0049ae;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover state */
+.template-buttons button:hover {
+  border-color: #0049ae;
+  background: #1d519e;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+/* Selected state */
+.template-buttons button.selected {
+  background: #0049ae;
+  color: #fff;
+  border-color: #0049ae;
+  box-shadow: 0 4px 12px rgba(0,73,174,0.3);
+}
+
+/* Optional subtle press effect */
+.template-buttons button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
 
   .step {
     font-size: 18px;
@@ -141,7 +173,7 @@
   }
 
   .sub-btns button {
-    flex: 1; /* stretch save/reset buttons to align */
+    flex: 1;
     height: 40px;
     background-color: #bebebe;
     color: #363636;
@@ -160,87 +192,197 @@
     outline: solid 1px rgba(2, 0, 126, 0.2);
   }
 
-  /* Tablet + Mobile */
-  @media (max-width: 1024px) {
-    .container {
-      flex-direction: column;
-    }
+  /* ===== FULL SCREEN INSTRUCTIONS OVERLAY ===== */
+.instructions-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
 
-    .form-section {
-      flex: 1;
-      width: 80%;
-    }
+.instructions-box {
+  background: #ffffff;
+  padding: 30px 25px;
+  border-radius: 10px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  position: relative;
+}
 
-    #panel {
-      visibility: hidden;
-    }
-    .canvas-section {
-      width: 100%;
-      margin-left: 0;
-      margin-top: 20px;
-    }
+.instructions-box h3 {
+  margin-top: 0;
+  color: #0049ae;
+}
 
-    canvas {
-      width: 100%;
-      height: auto;
-    }
+.instructions-box ol {
+  text-align: left;
+  padding-left: 18px;
+}
 
-    .sub-btns {
-      flex-direction: column;
-      margin-bottom: 40px;
-    }
+.instructions-box li {
+  margin-bottom: 10px;
+}
 
-    .template-buttons {
-      flex-wrap: wrap;
-    }
+.instructions-box p {
+  font-size: 11px;
+  margin-top: 20px;
+  color: #9b9b9b;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+}
+
+.close-btn:hover {
+  color: #000;
+}
+
+
+  @media (max-width: 1200px) {
+
+  body {
+    padding: 12px;
   }
 
-  /* Pop-up notification with close button */
-  #popup-message {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #0049ae;
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    font-size: 14px;
-    z-index: 9999;
-    max-width: 400px;
-    height: 100px;
+  .instructions-section {
+    flex: 0 0 200px;
+  
+  }
+
+  #panel {
     visibility: hidden;
   }
 
-  #popup-message .close-btn {
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
+ .container {
+    display: flex;
+    flex-direction: column;
   }
+
+  .instructions-section {
+    order: 1;
+  }
+
+   .form-section {
+    order: 2;
+  }
+
+  .canvas-section {
+    order: 3;
+  }
+
+  .form-section,
+  .canvas-section {
+    width: 100%;
+    margin: 0;
+  }
+
+  .canvas-section {
+    margin-top: 10px;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Make buttons easier to tap */
+  button {
+    font-size: 16px;
+    height: 50px;
+  }
+
+  .main-btn {
+    height: 56px;
+  }
+
+  /* Stack action buttons */
+  .sub-btns {
+    flex-direction: column;
+  }
+
+  .sub-btns button {
+    width: 100%;
+  }
+
+  /* Template buttons: clean 2-column grid on mobile only */
+  .template-buttons {
+    gap: 10px;
+  }
+
+  .template-buttons button {
+    flex: 1 1 calc(50% - 10px);
+  }
+
+  /* Improve readability */
+  .step {
+    font-size: 15px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+  }
+
+  /* Inputs feel better on mobile */
+  input[type="text"],
+  input[type="file"] {
+    font-size: 16px;
+    padding: 14px;
+  }
+
+  /* Instructions feel like a card */
+  .instructions-section {
+    margin-top: 10px;
+    padding: 14px;
+    font-size: 13px;
+  }
+
+  .instructions-section h3 {
+    font-size: 15px;
+  }
+
+  .instructions-section p {
+    font-size: 10px;
+  }
+}
+
+
 
 </style>
 </head>
 <body>
+  
+  
 
 <div class="container">
   <div id="panel"></div>
+
   <div class="form-section">
     <div class="step">Step 1: Select Service Area</div>
     <div class="template-buttons">
-      <button class="outline selected" onclick="selectTemplate('template.jpg', this)">Parks & Forestry</button>
+      <button class="outline selected" onclick="selectTemplate('template5.jpg', this)">General</button>
+      <button class="outline" onclick="selectTemplate('template.jpg', this)">Parks & Forestry</button>
       <button class="outline" onclick="selectTemplate('template2.jpg', this)">Roads & Parking</button>
       <button class="outline" onclick="selectTemplate('template3.jpg', this)">Solid Waste</button>
       <button class="outline" onclick="selectTemplate('template4.jpg', this)">Traffic</button>
+      
     </div>
 
     <div class="step">Step 2: Enter Name</div>
-    <input type="text" id="name" placeholder="Enter your name here" maxlength="19">
+    <input type="text" id="name" placeholder="Enter First Name" maxlength="19">
 
     <div class="step">Step 3: Enter Reason(s)</div>
     <div class="step-desc">These reasons will appear on the poster. Keep them short and meaningful.</div>
@@ -266,12 +408,31 @@
   <div class="canvas-section">
     <canvas id="canvas" width="596" height="842"></canvas>
   </div>
+
+  <!-- NEW INSTRUCTIONS PANEL -->
+  <div class="instructions-overlay" id="instructionsOverlay">
+  <div class="instructions-box">
+    <div class="close-btn" onclick="closeInstructions()">×</div>
+
+    <h3>HOW TO USE</h3>
+    <ol>
+      <li>Pick your area and fill out the information for your poster!</li>
+      <li>Click generate to preview your poster</li>
+      <li>Save your image once complete and print it. If you are unable to print, email the poster to your supervisor.</li>
+    </ol>
+
+    <h3>Remember to generate before saving image!</h3>
+
+    <p>Designed for you by PWD Learning & Development</p>
+  </div>
+</div>
+
 </div>
 
 <script>
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-let currentTemplate = 'template.jpg';
+let currentTemplate = 'template5.jpg';
 const templateImg = new Image();
 templateImg.src = currentTemplate;
 
@@ -364,16 +525,15 @@ async function generateCard() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(templateImg,0,0,canvas.width,canvas.height);
 
-    const nameInput = document.getElementById('name').value || "Enter your name here";
-const name = nameInput.substring(0, 19); // ensure max 19 characters
+    const nameInput = document.getElementById('name').value || "Enter Name";
+    const name = nameInput.substring(0, 19);
+
     ctx.fillStyle = '#232323';
     ctx.font = 'bold 32px Arial';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(name, 30, 150);
-   
-    ctx.lineWidth = 2;
-  
+
     const headerText = "Why is it important for me to return home safely each day?";
     ctx.fillStyle = '#232323';
     ctx.font = '18px Arial';
@@ -399,6 +559,7 @@ const name = nameInput.substring(0, 19); // ensure max 19 characters
     ].filter(f => f);
 
     let size, imgPositions = [];
+
     switch(files.length) {
         case 1:
             size = 250;
@@ -434,22 +595,6 @@ const name = nameInput.substring(0, 19); // ensure max 19 characters
         const img = await loadImage(files[i]);
         if (img) drawRoundedImage(img,imgPositions[i].x,imgPositions[i].y,size,size,15,false);
     }
-
-    // show persistent pop-up message
-    let existingPopup = document.getElementById('popup-message');
-    if (!existingPopup) {
-        let popup = document.createElement('div');
-        popup.id = 'popup-message';
-        popup.innerHTML = "You've created your poster! Click the print button for your work area. Make sure you upload your poster to the dropbox for the health and safety team.";
-
-        let closeBtn = document.createElement('button');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.onclick = () => popup.remove();
-
-        popup.appendChild(closeBtn);
-        document.body.appendChild(popup);
-    }
 }
 
 function saveCard() {
@@ -473,7 +618,13 @@ function resetForm() {
     document.getElementById('img4').value = '';
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+
 }
+
+function closeInstructions() {
+  document.getElementById('instructionsOverlay').style.display = 'none';
+}
+
 </script>
 
 </body>
