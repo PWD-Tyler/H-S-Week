@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
 <meta charset="UTF-8">
 <title>Why I Work Safe Poster</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
+    font-family: 'Nunito', Arial, sans-serif;
     background: #ebebeb;
     margin: 0;
-    padding: 20px;
+    padding: 0;
     overflow-x: hidden; /* prevent horizontal scroll */
+
+    
+
   }
 
   .container {
@@ -17,10 +22,15 @@
     gap: 40px;
     align-items: flex-start;
     justify-content: flex-start;
+    padding: 0px;
+    bottom: 0px;
+    
   }
 
   .form-section {
     flex: 0 0 360px; /* slightly wider */
+    padding-left: 15px;
+    padding-top: 10px;
   }
 
   .canvas-section {
@@ -32,11 +42,12 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     background: #fff;
+    margin-top: 30px;;
   }
 
   input[type="text"], input[type="file"] {
     margin: 6px 0;
-    width: 100%;
+    width: 94.5%;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -204,13 +215,14 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  
 }
 
 .instructions-box {
-  background: #ffffff;
-  padding: 30px 25px;
+  background: #f5f7fa;;
+  padding: 50px 55px;
   border-radius: 10px;
-  width: 400px;
+  width: 500px;
   max-width: 90%;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -218,8 +230,10 @@
 }
 
 .instructions-box h3 {
+  font-size: 20px;
   margin-top: 0;
   color: #0049ae;
+  font-weight: 950;
 }
 
 .instructions-box ol {
@@ -229,26 +243,110 @@
 
 .instructions-box li {
   margin-bottom: 10px;
+  color: #363636;
 }
 
 .instructions-box p {
   font-size: 11px;
-  margin-top: 20px;
-  color: #9b9b9b;
+  margin-bottom: -20px;
+  color: #979797;
 }
 
 /* Close button */
 .close-btn {
   position: absolute;
-  top: 10px;
+  top: 0px;
   right: 12px;
-  font-size: 20px;
+  font-size: 30px;
   cursor: pointer;
-  color: #888;
+  color: #0049ae;
 }
 
 .close-btn:hover {
   color: #000;
+}
+
+/* Loading screen */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Simple spinner */
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #0049ae;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+#loadingText {
+  font-size: 30px;
+  color: #0049ae;
+  max-width: 260px;
+  text-align: center;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* Floating help button */
+#helpBtn {
+  
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10%;
+  background: #0049ae;
+  color: #fff;
+  border: none;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  opacity: 0;
+  animation: fadeInHelp 0.6s ease forwards;
+  animation-delay: 2.5s;
+}
+
+@keyframes fadeInHelp {
+  to { opacity: 1; }
+}
+
+#helpBtn:hover {
+  transform: translateY(-2px);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 
@@ -256,6 +354,13 @@
 
   body {
     padding: 12px;
+  }
+
+  #helpBtn {
+    top: 5px;
+    right: 5px;
+  width: 30px;
+  height: 30px;
   }
 
   .instructions-section {
@@ -343,20 +448,39 @@
     padding: 14px;
   }
 
-  /* Instructions feel like a card */
-  .instructions-section {
-    margin-top: 10px;
-    padding: 14px;
-    font-size: 13px;
-  }
+ .instructions-box {
+  width: 80%;
+  max-width: 95%;
+  height: 30%;
+  padding: 40px 50px;
+  border-radius: 12px;
+}
 
-  .instructions-section h3 {
-    font-size: 15px;
-  }
+/* Make text scale better on mobile */
+.instructions-box h3 {
+  font-size: 40px;
+}
 
-  .instructions-section p {
-    font-size: 10px;
-  }
+.instructions-box li {
+  font-size: 35px;
+ 
+}
+
+.instructions-box p {
+  font-size: 16px;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 0px;
+  right: 16px;
+  font-size: 50px;
+  cursor: pointer;
+  color: #0049ae;
+}
+
+
 }
 
 
@@ -365,7 +489,12 @@
 </head>
 <body>
   
-  
+  <div id="loadingScreen" class="loading-screen">
+  <div class="loading-content">
+    <div class="loader"></div>
+    <div id="loadingText"></div>
+  </div>
+</div>
 
 <div class="container">
   <div id="panel"></div>
@@ -417,7 +546,7 @@
     <h3>HOW TO USE</h3>
     <ol>
       <li>Pick your area and fill out the information for your poster!</li>
-      <li>Click generate to preview your poster</li>
+      <li>Click generate to preview your poster.</li>
       <li>Save your image once complete and print it. If you are unable to print, email the poster to your supervisor.</li>
     </ol>
 
@@ -430,6 +559,16 @@
 </div>
 
 <script>
+  const loadingSayings = [
+  "PWD Health & Safety...",
+  "Safety starts with awareness.",
+  "Health & Safety Week is here...",
+  "Why do you work safe?",
+  "Loading PWD safety poster maker...",
+  "Almost ready to go!",
+  "Making things simple for you...",
+  "Designing safer habits..."
+];
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let currentTemplate = 'template5.jpg';
@@ -623,9 +762,37 @@ function resetForm() {
 
 function closeInstructions() {
   document.getElementById('instructionsOverlay').style.display = 'none';
+  localStorage.setItem("instructionsSeen", "true");
 }
 
-</script>
+function openInstructions() {
+  const overlay = document.getElementById('instructionsOverlay');
+  overlay.style.display = 'flex';
+}
 
+window.addEventListener("load", function () {
+  const overlay = document.getElementById("instructionsOverlay");
+  const loader = document.getElementById("loadingScreen");
+  const seen = localStorage.getItem("instructionsSeen");
+
+  // Wait 2 seconds
+  setTimeout(() => {
+    loader.style.display = "none";
+
+    if (seen === "true") {
+      overlay.style.display = "none";
+    } else {
+      overlay.style.display = "flex";
+    }
+
+  }, 2000);
+});
+
+const text = document.getElementById("loadingText");
+const randomIndex = Math.floor(Math.random() * loadingSayings.length);
+text.textContent = loadingSayings[randomIndex];
+</script>
+<!-- HELP BUTTON -->
+<button id="helpBtn" onclick="openInstructions()">?</button>
 </body>
 </html>
