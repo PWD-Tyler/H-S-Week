@@ -107,25 +107,26 @@
   }
 
 .template-buttons {
-  margin: 10px 0 20px;
-  display: flex;
-  gap: 6px; /* slightly tighter */
-  flex-wrap: nowrap; /* keep one row */
+  margin: 6px 0 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
   width: 100%;
 }
 
 .template-buttons button {
-  flex: 1 1 0;
-  min-width: 0;
-  padding: 12px 10px; /* increased padding */
-  font-size: 13px;
-  border-radius: 10px;
-  border: 2px solid #d0d7e2;
+  padding: 8px 6px;
+  font-size: 11.5px;
+  border-radius: 8px;
+  border: 1.5px solid #d0d7e2;
   background: #fff;
   color: #0049ae;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.12s ease;
+    height: 38px;
+  padding: 9px 6px;
+  white-space: nowrap;
 }
 
 /* Hover state */
@@ -194,7 +195,7 @@
     background: #f5f7fa;
     position: fixed;
     z-index: -1;
-    width: 450px;
+    width: 420px;
     height: 1000px;
     overflow: hidden;
     margin-left: -20px;
@@ -298,9 +299,9 @@
 }
 
 #loadingText {
-  font-size: 30px;
+  font-size: 50px;
   color: #0049ae;
-  max-width: 260px;
+  max-width: 40%px;
   text-align: center;
   opacity: 0;
   animation: fadeIn 0.6s ease forwards;
@@ -308,6 +309,33 @@
 
 @keyframes fadeIn {
   to { opacity: 1; }
+}
+
+.loader-container {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #0049ae;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loader-text {
+  position: absolute;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0049ae;
+  z-index: 2;
 }
 
 /* Floating help button */
@@ -347,6 +375,48 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.site-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0049ae;
+  margin-bottom: 0px;
+  margin-top: 5px;
+}
+
+#successBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #1f9d55;
+  color: white;
+  text-align: center;
+  padding: 14px 10px;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 100000;
+
+  transform: translateY(-110%);
+  transition: transform 0.3s ease;
+}
+
+#errorBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #d93025;
+  color: white;
+  text-align: center;
+  padding: 14px 10px;
+  font-weight: 700;
+  font-size: 14px;
+  z-index: 100000;
+
+  transform: translateY(-110%);
+  transition: transform 0.3s ease;
 }
 
 
@@ -491,15 +561,24 @@
   
   <div id="loadingScreen" class="loading-screen">
   <div class="loading-content">
-    <div class="loader"></div>
+    <div class="loader-container">
+  <div class="loader"></div>
+  <div class="loader-text">H&S</div>
+</div>
     <div id="loadingText"></div>
   </div>
 </div>
-
+<div id="successBanner">
+  Poster created! Click Save Image to download and print for your Safety Week board. If you are unable to print, send the image to your supervisor for printing.
+</div>
+<div id="errorBanner">
+  Please complete your name and at least one reason before generating your poster.
+</div>
 <div class="container">
   <div id="panel"></div>
 
   <div class="form-section">
+    <div class="site-title">PWD Poster Maker</div>
     <div class="step">Step 1: Select Service Area</div>
     <div class="template-buttons">
       <button class="outline selected" onclick="selectTemplate('template5.jpg', this)">General</button>
@@ -521,11 +600,10 @@
     <input type="text" id="reason4" placeholder="Example: My Favourite Movie">
 
     <div class="step">Step 4: Upload Picture(s)</div>
-    <div class="step-desc">Choose 1–4 images to show on your poster that connect to your reasons.</div>
+    <div class="step-desc">Choose 1–2 images to show on your poster that connect to your reasons.</div>
     <input type="file" id="img1" accept="image/*">
     <input type="file" id="img2" accept="image/*">
-    <input type="file" id="img3" accept="image/*">
-    <input type="file" id="img4" accept="image/*">
+
 
     <button class="filled main-btn" onclick="generateCard()">Generate</button>
     <div class="sub-btns">
@@ -560,14 +638,12 @@
 
 <script>
   const loadingSayings = [
-  "PWD Health & Safety...",
-  "Safety starts with awareness.",
-  "Health & Safety Week is here...",
+  "PWD Health & Safety was here :)",
+  "Safety starts with awareness!",
+  "Health & Safety Week is here!",
   "Why do you work safe?",
   "Loading PWD safety poster maker...",
-  "Almost ready to go!",
-  "Making things simple for you...",
-  "Designing safer habits..."
+  "Wait...we can make posters?"
 ];
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
@@ -604,34 +680,38 @@ function loadImage(file) {
     });
 }
 
-function drawRoundedImage(img, x, y, w, h, r=20, border=false) {
+function drawRoundedImage(img, x, y, w, h, r=20, border=false, rotation=0) {
     ctx.save();
+
+    // Move to center of image for rotation
+    ctx.translate(x + w/2, y + h/2);
+    ctx.rotate(rotation);
+
     ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.lineTo(x+w-r, y);
-    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-    ctx.lineTo(x+w, y+h-r);
-    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-    ctx.lineTo(x+r, y+h);
-    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-    ctx.lineTo(x, y+r);
-    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.moveTo(-w/2 + r, -h/2);
+    ctx.lineTo(w/2 - r, -h/2);
+    ctx.quadraticCurveTo(w/2, -h/2, w/2, -h/2 + r);
+    ctx.lineTo(w/2, h/2 - r);
+    ctx.quadraticCurveTo(w/2, h/2, w/2 - r, h/2);
+    ctx.lineTo(-w/2 + r, h/2);
+    ctx.quadraticCurveTo(-w/2, h/2, -w/2, h/2 - r);
+    ctx.lineTo(-w/2, -h/2 + r);
+    ctx.quadraticCurveTo(-w/2, -h/2, -w/2 + r, -h/2);
     ctx.closePath();
     ctx.clip();
 
     let scale = Math.min(w / img.width, h / img.height);
     let newWidth = img.width * scale;
     let newHeight = img.height * scale;
-    let offsetX = x + (w - newWidth) / 2;
-    let offsetY = y + (h - newHeight) / 2;
 
-    ctx.drawImage(img, offsetX, offsetY, newWidth, newHeight);
+    ctx.drawImage(img, -newWidth/2, -newHeight/2, newWidth, newHeight);
 
     if (border) {
         ctx.strokeStyle = '#000';
         ctx.lineWidth = 3;
         ctx.stroke();
     }
+
     ctx.restore();
 }
 
@@ -656,85 +736,119 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
 }
 
 async function generateCard() {
+
+    // wait for template
     await new Promise(resolve => {
         if (templateImg.complete) resolve();
         else templateImg.onload = resolve;
     });
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.drawImage(templateImg,0,0,canvas.width,canvas.height);
+    // ----------------------------
+    // VALIDATION (STEP 2 + STEP 3)
+    // ----------------------------
+    const nameInputCheck = document.getElementById('name').value.trim();
 
+    const reasonsCheck = [
+        document.getElementById('reason1').value,
+        document.getElementById('reason2').value,
+        document.getElementById('reason3').value,
+        document.getElementById('reason4').value
+    ];
+
+    const hasReason = reasonsCheck.some(r => r.trim() !== "");
+
+    if (!nameInputCheck || !hasReason) {
+        showErrorBanner();
+        return;
+    }
+
+    // ----------------------------
+    // DRAW TEMPLATE
+    // ----------------------------
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+
+    // ----------------------------
+    // NAME
+    // ----------------------------
     const nameInput = document.getElementById('name').value || "Enter Name";
     const name = nameInput.substring(0, 19);
 
-    ctx.fillStyle = '#232323';
-    ctx.font = 'bold 32px Arial';
+    ctx.fillStyle = '#363636';
+    ctx.font = 'bold 35px Arial';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(name, 30, 150);
 
-    const headerText = "Why is it important for me to return home safely each day?";
+    // ----------------------------
+    // HEADER TEXT
+    // ----------------------------
+    const headerText = "I work safe for:";
     ctx.fillStyle = '#232323';
     ctx.font = '18px Arial';
     ctx.textBaseline = 'top';
     wrapText(ctx, headerText, 30, 190, 340, 23);
 
-    const reasons = [
-        document.getElementById('reason1').value,
-        document.getElementById('reason2').value,
-        document.getElementById('reason3').value,
-        document.getElementById('reason4').value
-    ].filter(r => r.trim() !== "");
+    // ----------------------------
+    // REASONS
+    // ----------------------------
+    const reasons = reasonsCheck.filter(r => r.trim() !== "");
 
     if (reasons.length > 0) {
-        wrapText(ctx, reasons.join(", ") + ".", 30, 250, 340, 28);
+        wrapText(ctx, reasons.join(", ") + ".", 30, 230, 340, 28);
     }
 
+    // ----------------------------
+    // IMAGES
+    // ----------------------------
     const files = [
         document.getElementById('img1').files[0],
-        document.getElementById('img2').files[0],
-        document.getElementById('img3').files[0],
-        document.getElementById('img4').files[0]
+        document.getElementById('img2').files[0]
     ].filter(f => f);
 
     let size, imgPositions = [];
 
-    switch(files.length) {
-        case 1:
-            size = 250;
-            imgPositions = [{x: (canvas.width - size)/2, y: 400}];
-            break;
-        case 2:
-            size = 220;
-            imgPositions = [
-                {x: canvas.width * 0.28 - size/2, y: 420},
-                {x: 3*canvas.width * 0.22 - size/2, y: 420}
-            ];
-            break;
-        case 3:
-            size = 150;
-            imgPositions = [
-                {x: canvas.width/4 - size/2, y: 400},
-                {x: 3*canvas.width/4 - size/2, y: 400},
-                {x: (canvas.width - size)/2, y: 580}
-            ];
-            break;
-        case 4:
-            size = 180;
-            imgPositions = [
-                {x: canvas.width * 0.33 - size/2, y: 380},
-                {x: canvas.width * 0.67 - size/2, y: 380},
-                {x: canvas.width * 0.33 - size/2, y: 580},
-                {x: canvas.width * 0.67 - size/2, y: 580}
-            ];
-            break;
+    if (files.length === 1) {
+        size = 320;
+        imgPositions = [
+            { x: (canvas.width - size) / 2, y: 400 }
+        ];
+    }
+
+    if (files.length === 2) {
+        size = 280;
+        imgPositions = [
+            { x: canvas.width * 0.28 - size / 2, y: 420 },
+            { x: canvas.width * 0.70 - size / 2, y: 420 }
+        ];
     }
 
     for (let i = 0; i < files.length; i++) {
         const img = await loadImage(files[i]);
-        if (img) drawRoundedImage(img,imgPositions[i].x,imgPositions[i].y,size,size,15,false);
+
+        if (img) {
+            const angle = (Math.random() * 20 - 10) * Math.PI / 180;
+
+            drawRoundedImage(
+                img,
+                imgPositions[i].x,
+                imgPositions[i].y,
+                size,
+                size,
+                15,
+                false,
+                angle
+            );
+        }
     }
+
+    // SUCCESS BANNER
+    showSuccessBanner();
 }
+
+
+
+
 
 function saveCard() {
     canvas.toBlob(function(blob){
@@ -751,13 +865,57 @@ function resetForm() {
     document.getElementById('reason2').value = '';
     document.getElementById('reason3').value = '';
     document.getElementById('reason4').value = '';
+
     document.getElementById('img1').value = '';
     document.getElementById('img2').value = '';
-    document.getElementById('img3').value = '';
-    document.getElementById('img4').value = '';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
 
+    // reset canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // redraw default template safely
+    templateImg.onload = () => {
+        ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+    };
+
+    if (templateImg.complete) {
+        ctx.drawImage(templateImg, 0, 0, canvas.width, canvas.height);
+    }
+
+    // optional: reset banner visibility
+    const success = document.getElementById("successBanner");
+    if (success) success.style.transform = "translateY(-110%)";
+}
+
+function showSuccessBanner() {
+    const banner = document.getElementById("successBanner");
+
+    if (!banner) return; // safety check
+
+    banner.hidden = false;
+
+    // force reflow so animation always triggers
+    void banner.offsetWidth;
+
+    banner.style.transform = "translateY(0)";
+
+    setTimeout(() => {
+        banner.style.transform = "translateY(-110%)";
+
+        setTimeout(() => {
+            banner.hidden = true;
+        }, 300);
+    }, 9000);
+}
+
+function showErrorBanner() {
+    const banner = document.getElementById("errorBanner");
+    if (!banner) return;
+
+    banner.style.transform = "translateY(0)";
+
+    setTimeout(() => {
+        banner.style.transform = "translateY(-110%)";
+    }, 3500);
 }
 
 function closeInstructions() {
