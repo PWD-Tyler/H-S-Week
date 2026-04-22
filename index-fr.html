@@ -205,23 +205,32 @@
   }
 
   #langBtn {
-  position: fixed;
+   position: fixed;
   top: 10px;
-  right: 60px;
+  right: 70px;
   width: 44px;
   height: 44px;
   border-radius: 10%;
   background: #0049ae;
   color: #fff;
   border: none;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: bold;
   cursor: pointer;
   box-shadow: 0 6px 14px rgba(0,0,0,0.2);
   z-index: 10001;
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  opacity: 0;
+  animation: fadeInHelp 0.6s ease forwards;
+  animation-delay: 2.5s;
+}
+
+@keyframes fadeInHelp {
+  to { opacity: 1; }
+}
 }
 
   /* ===== FULL SCREEN INSTRUCTIONS OVERLAY ===== */
@@ -598,7 +607,7 @@
   <div id="panel"></div>
 
   <div class="form-section">
-    <div class="site-title">PWD Poster Maker</div>
+    <div class="site-title">French PWD Poster Maker</div>
     <div class="step">Step 1: Select Service Area</div>
     <div class="template-buttons">
       <button class="outline selected" onclick="selectTemplate('template5.jpg', this)">General</button>
@@ -972,6 +981,6 @@ text.textContent = loadingSayings[randomIndex];
 </script>
 <!-- HELP BUTTON -->
 <button id="helpBtn" onclick="openInstructions()">?</button>
-<a id="langBtn" href="index-fr.html">FR</a>
+<a id="langBtn" href="index.html">EN</a>
 </body>
 </html>
