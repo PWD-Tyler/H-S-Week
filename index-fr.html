@@ -195,7 +195,7 @@
     background: #f5f7fa;
     position: fixed;
     z-index: -1;
-    width: 420px;
+    width: 500px;
     height: 1000px;
     overflow: hidden;
     margin-left: -20px;
@@ -607,46 +607,46 @@
   </div>
 </div>
 <div id="successBanner">
-  Poster created! Click Save Image to download and print for your Safety Week board. If you are unable to print, send the image to your supervisor for printing.
+  Affiche créée ! Cliquez sur « Enregistrer l’image » pour la télécharger et l’imprimer pour votre tableau de la Semaine de la sécurité. Si vous ne pouvez pas imprimer.
 </div>
 <div id="errorBanner">
-  Please complete your name and at least one reason before generating your poster.
+  Veuillez indiquer votre nom et au moins un motif avant de générer votre affiche. 
 </div>
 <div class="container">
   <div id="panel"></div>
 
   <div class="form-section">
-    <div class="site-title">PWD Poster Maker</div>
-    <div class="step">Step 1: Select Service Area</div>
+    <div class="site-title">DTP Créateur d'affiches</div>
+    <div class="step">Étape 1 : Sélectionnez votre secteur d'activité </div>
     <div class="template-buttons">
-      <button class="outline selected" onclick="selectTemplate('template6.jpg', this)">General</button>
-      <button class="outline" onclick="selectTemplate('template7.jpg', this)">Parks & Forestry</button>
-      <button class="outline" onclick="selectTemplate('template10.jpg', this)">Roads & Parking</button>
-      <button class="outline" onclick="selectTemplate('template9.jpg', this)">Solid Waste</button>
-      <button class="outline" onclick="selectTemplate('template8.jpg', this)">Traffic</button>
+      <button class="outline selected" onclick="selectTemplate('template6.jpg', this)">Général</button>
+      <button class="outline" onclick="selectTemplate('template7.jpg', this)">Parcs et forêts </button>
+      <button class="outline" onclick="selectTemplate('template10.jpg', this)">Voirie et stationnement </button>
+      <button class="outline" onclick="selectTemplate('template9.jpg', this)">Gestion des déchets solides </button>
+      <button class="outline" onclick="selectTemplate('template8.jpg', this)">Circulation </button>
       
     </div>
 
-    <div class="step">Step 2: Enter Name</div>
-    <input type="text" id="name" placeholder="Enter First Name" maxlength="19">
+    <div class="step">Étape 2 : Saisissez votre nom</div>
+    <input type="text" id="name" placeholder="Saisissez votre prénom" maxlength="19">
 
-    <div class="step">Step 3: Enter Reason(s)</div>
-    <div class="step-desc">These reasons will appear on the poster. Keep them short and meaningful.</div>
-    <input type="text" id="reason1" placeholder="Example: My Dog">
-    <input type="text" id="reason2" placeholder="Example: My Partner">
-    <input type="text" id="reason3" placeholder="Example: My Kids">
-    <input type="text" id="reason4" placeholder="Example: My Favourite Movie">
+    <div class="step">Étape 3 : Saisissez le ou les motifs </div>
+    <div class="step-desc">Ces motifs apparaîtront sur l'affiche. Soyez bref et pertinent. </div>
+    <input type="text" id="reason1" placeholder="Exemple:Mon chien ">
+    <input type="text" id="reason2" placeholder="Exemple:Mon/Ma partenaire ">
+    <input type="text" id="reason3" placeholder="Exemple:Mes enfants ">
+    <input type="text" id="reason4" placeholder="Exemple:Mon film préféré ">
 
-    <div class="step">Step 4: Upload Picture(s)</div>
-    <div class="step-desc">Choose 1–2 images to show on your poster that connect to your reasons.</div>
+    <div class="step">Étape 4 : Téléchargez une ou deux images </div>
+    <div class="step-desc">Choisissez une ou deux images pour votre affiche, en lien avec vos motifs.</div>
     <input type="file" id="img1" accept="image/*">
     <input type="file" id="img2" accept="image/*">
 
 
-    <button class="filled main-btn" onclick="generateCard()">Generate</button>
+    <button class="filled main-btn" onclick="generateCard()">Générer</button>
     <div class="sub-btns">
-      <button class="filled" onclick="saveCard()">Save Image</button>
-      <button class="filled" onclick="resetForm()">Reset</button>
+      <button class="filled" onclick="saveCard()">Enregistrer l'image</button>
+      <button class="filled" onclick="resetForm()">Réinitialiser</button>
     </div>
   </div>
 
@@ -659,16 +659,16 @@
   <div class="instructions-box">
     <div class="close-btn" onclick="closeInstructions()">×</div>
 
-    <h3>HOW TO USE</h3>
+    <h3>MODE D'EMPLOI </h3>
     <ol>
-      <li>Pick your area and fill out the information for your poster!</li>
-      <li>Click generate to preview your poster.</li>
-      <li>Save your image once complete and print it. If you are unable to print, email the poster to your supervisor.</li>
+      <li>Choisissez votre secteur et remplissez les informations pour votre affiche ! </li>
+      <li>Cliquez sur « Générer » pour prévisualiser votre affiche. </li>
+      <li>Une fois votre image terminée, enregistrez-la et imprimez-la. Si vous ne pouvez pas l'imprimer, envoyez-la par courriel à votre gérant. </li>
     </ol>
 
-    <h3>Remember to generate before saving image!</h3>
+    <h3>N'oubliez pas de générer l'affiche avant de l'enregistrer ! </h3>
 
-    <p>Designed for you by PWD Learning & Development</p>
+    <p>Conçu pour vous par le service Formation et Développement DTP </p>
   </div>
 </div>
 
